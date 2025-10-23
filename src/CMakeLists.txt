@@ -1,6 +1,5 @@
-set(CmakeConfig.cmake $ENV{MBG_Config})
-include(${CmakeConfig.cmake})
-message(STATUS "Audio Server CMAKE_BINARY_DIR  is: ${CMAKE_BINARY_DIR}")
+
+message(STATUS "ClientServer CMAKE_BINARY_DIR  is: ${CMAKE_BINARY_DIR}")
 
 set(CMAKE_PREFIX_PATH $ENV{Qt5_12})  # Adjust to your Qt install path
 

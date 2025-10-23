@@ -26,7 +26,7 @@ clConnection::~clConnection()
 }
 
 
-std::tuple<bool, QString> clConnection::Connect(QHostAddress const& paHost,unsigned short paPort)
+std::tuple<bool, QString> clConnection::Connect(const QHostAddress& paHost,unsigned short paPort)
 {
     m_Socket = std::make_unique<QTcpSocket>(this);
     connectSignalSlot(false);
@@ -44,7 +44,7 @@ std::tuple<bool, QString> clConnection::Connect(QHostAddress const& paHost,unsig
     return { true, ""};
 }
 
-void clConnection::connectSignalSlot(const bool& paServerMode)
+void clConnection::connectSignalSlot(bool paServerMode)
 {
     if (!paServerMode)
         connect(m_Socket.get(), SIGNAL(connected()), this, SLOT(connected()));
@@ -54,7 +54,7 @@ void clConnection::connectSignalSlot(const bool& paServerMode)
     connect(m_Socket.get(), SIGNAL(bytesWritten(qint64)), this, SLOT(bytesWritten(qint64)));
 }
 
-std::tuple<bool, QString> clConnection::Listen(QHostAddress const& paHost, unsigned short paPort)
+std::tuple<bool, QString> clConnection::Listen(const QHostAddress& paHost, unsigned short paPort)
 {
     m_TcpServer = std::make_unique<QTcpServer>(this);
 
@@ -131,7 +131,7 @@ QByteArray clConnection::Read()
     return m_Socket->readAll();
 }
 
-void clConnection::Write(QByteArray const& paBytes)
+void clConnection::Write(const QByteArray& paBytes)
 {
     if (m_Socket)
     {
@@ -140,7 +140,7 @@ void clConnection::Write(QByteArray const& paBytes)
     }
 }
 
-void clConnection::Write(const char* paBytes, int64_t paLenght)
+void clConnection::Write(char const * const paBytes, int64_t paLenght)
 {
     if (m_Socket)
     {

@@ -21,7 +21,7 @@
 #include <random>
 
 
-clDataGeneratorThread::clDataGeneratorThread(clMainWindow* const paMainWindow, QThread *parent)
+clDataGeneratorThread::clDataGeneratorThread(clMainWindow* const paMainWindow, QThread* const parent)
     : QThread{parent}, m_MainWindow(paMainWindow)
 {
     Start();
@@ -166,7 +166,7 @@ void clDataGeneratorThread::sendData()
             writeResponse();
         };
 
-        QTimer::singleShot(generateRandomIntiger(std::get<0>(m_DataSource->m_AutoSendIntervalPair), std::get<1>(m_DataSource->m_AutoSendIntervalPair)), this, writeResponseFcn);
+        QTimer::singleShot(generateRandomInteger(std::get<0>(m_DataSource->m_AutoSendIntervalPair), std::get<1>(m_DataSource->m_AutoSendIntervalPair)), this, writeResponseFcn);
     }
 }
 
@@ -247,7 +247,7 @@ void clDataGeneratorThread::writeResponse()
 
         for (size_t i = 0; i < sizeofArray; i += sizeof(int))
         {
-            int loValue = generateRandomIntiger(0, 1000);
+            int loValue = generateRandomInteger(0, 1000);
             char* loChar = reinterpret_cast<char*>(&loValue);
 
             *(m_RandomChar.get() + i) = *(loChar);
@@ -275,12 +275,12 @@ void clDataGeneratorThread::writeResponse()
             writeResponse();
         };
 
-        QTimer::singleShot(generateRandomIntiger(std::get<0>(m_DataSource->m_AutoSendIntervalPair), std::get<1>(m_DataSource->m_AutoSendIntervalPair)), this, writeResponseFcn);
+        QTimer::singleShot(generateRandomInteger(std::get<0>(m_DataSource->m_AutoSendIntervalPair), std::get<1>(m_DataSource->m_AutoSendIntervalPair)), this, writeResponseFcn);
     }
 
 }
 
-int clDataGeneratorThread::generateRandomIntiger(const int paLowerLimit, const int paUpperLimit)
+int clDataGeneratorThread::generateRandomInteger(const int paLowerLimit, const int paUpperLimit)
 {
     std::random_device rd;
     std::mt19937 gen(rd());

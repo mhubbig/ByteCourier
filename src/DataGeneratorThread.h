@@ -48,7 +48,7 @@ private:
 
     bool initialize();
     void logData(const QString& paMessage, bool paError);
-    int  generateRandomIntiger(const int paLowerLimit, const int paUpperLimit);
+    int  generateRandomInteger(const int paLowerLimit, const int paUpperLimit);
     void sendData();
     void stopSendingData(bool paStopSending);
     void Start();
