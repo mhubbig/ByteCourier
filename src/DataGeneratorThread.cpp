@@ -21,7 +21,7 @@
 #include <random>
 
 
-clDataGeneratorThread::clDataGeneratorThread(clMainWindow* const paMainWindow, QThread *parent)
+clDataGeneratorThread::clDataGeneratorThread(clMainWindow* const paMainWindow, QThread* const parent)
     : QThread{parent}, m_MainWindow(paMainWindow)
 {
     Start();

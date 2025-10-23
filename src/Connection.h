@@ -36,13 +36,13 @@ public:
     explicit clConnection(QObject *parent = 0);
     ~clConnection();
 
-    std::tuple<bool, QString> Connect(QHostAddress const& paHost,unsigned short paPort);
-    void connectSignalSlot(const bool& paServerMode);
+    std::tuple<bool, QString> Connect(const QHostAddress& paHost,unsigned short paPort);
+    void connectSignalSlot(bool paServerMode);
     void Disconnect();
-    std::tuple<bool, QString> Listen(QHostAddress const& paHost, unsigned short paPort);
+    std::tuple<bool, QString> Listen(const QHostAddress& paHost, unsigned short paPort);
     QByteArray Read();
-    void Write(QByteArray const& paBytes);
-    void Write(const char* paBytes, int64_t paLenght);
+    void Write(const QByteArray& paBytes);
+    void Write(char const * const paBytes, int64_t paLenght);
 
 
     std::function<void()> fnReadyRead;
