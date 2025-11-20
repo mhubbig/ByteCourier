@@ -41,11 +41,12 @@ Installation & Usage
 
 Clone the repository: git clone https://github.com/mhubbig/ByteCourier.git
 
-Build the project using CMake: 
-mkdir build 
-cd build 
-cmake .. 
-make
+Build the project using CMake:
+```
+mkdir build
+cd build
+cmake ..
+```
 
 Run the application:
 
