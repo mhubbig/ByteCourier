@@ -427,6 +427,8 @@ void clMainWindow:: connectToServer()
 
             if (m_ConnectedToServer)
             {
+                m_ConnectedToServer = false;
+
                 if (m_TcpIpRadioCleint->isChecked())
                     m_ConnectButton->setText("Connect to Server");
                 else if (m_TcpIpRadioServer->isChecked())
@@ -434,13 +436,12 @@ void clMainWindow:: connectToServer()
 
                 if (m_FileIsOpen)
                 {
+                    m_FileIsOpen = false;
+
                     fflush(m_LogFile);
                     fclose(m_LogFile);
-
-                    m_FileIsOpen = false;
                 }
 
-                m_ConnectedToServer = false;
             }
         }
         
@@ -592,6 +593,8 @@ void clMainWindow::invokabeDisconnedted()
 {
     if (m_ConnectedToServer && m_TcpIpRadioCleint->isChecked())
     {
+        m_ConnectedToServer = false;
+
         if (m_TcpIpRadioCleint->isChecked())
             m_ConnectButton->setText("Connect to Server");
         else if (m_TcpIpRadioServer->isChecked())
@@ -599,12 +602,11 @@ void clMainWindow::invokabeDisconnedted()
 
         if (m_FileIsOpen)
         {
+            m_FileIsOpen = false;
+
             fflush(m_LogFile);
             fclose(m_LogFile);
-
-            m_FileIsOpen = false;
         }
 
-        m_ConnectedToServer = false;
     }
 }

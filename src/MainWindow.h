@@ -46,7 +46,7 @@ public:
     explicit clMainWindow(QWidget *parent = nullptr);
 
     void disconnedted();
-    void LogText(QString const& paMessage, QString const& paForegroundColor);
+    void LogText(QString const& paMessage, QString const& paForegroundColor = "black");
     void setClientEventLoop( clDataGeneratorThread* const paClientEventLoop);
 
 private slots:
@@ -62,7 +62,7 @@ private:
 
     void fillDataSourceText();
 
-    Q_INVOKABLE void invokeAbleLogText(QString const& paMessage, QString const& paForegroundColor);
+    Q_INVOKABLE void invokeAbleLogText(QString const& paMessage, QString const& paForegroundColor = "black");
     Q_INVOKABLE void invokabeDisconnedted();
 
     QFrame*  makeFrame(QWidget* paParent);
@@ -102,7 +102,7 @@ private:
 
     //************** LogTab
     QTextEdit* m_LogText;
-    FILE*  m_LogFile;
+    FILE*  m_LogFile = nullptr;
 
 
     QGridLayout* gridLayout;
