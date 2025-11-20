@@ -96,9 +96,18 @@ bool clDataGeneratorThread::initialize()
     m_TcpDevice->fnLogData = std::bind(&clDataGeneratorThread::logData, this, std::placeholders::_1, std::placeholders::_2);
     m_TcpDevice->fnReadyRead = std::bind(&clDataGeneratorThread::readDataFromSocket,this);
 
+    initializeConnection();
+
+    initializeDataTransfer();
+
+    return  m_Initialized;
+}
+
+void clDataGeneratorThread::initializeConnection()
+{
     std::string strPortNumber(m_DataSource->m_PortNummber);
     unsigned short portNumber = static_cast<unsigned short>(std::stoi(strPortNumber));
-    std::string strIpAdress(m_DataSource->m_IpAdress);
+    std::string strIpAdress(m_DataSource->m_IpAddress);
 
     if (m_DataSource->m_ServerMode)
     {
@@ -106,11 +115,11 @@ bool clDataGeneratorThread::initialize()
 
         const auto& loStatus = m_TcpDevice->Listen(QHostAddress(QString::fromStdString(strIpAdress)), portNumber);
 
-        if (std::get<0>(loStatus)){
+        if (std::get<0>(loStatus)) {
             m_Initialized = true;
             m_MainWindow->LogText("Waiting for clients ...", "black");
         }
-        else{
+        else {
             m_MainWindow->LogText(std::get<1>(loStatus), "red");
         }
     }
@@ -128,8 +137,10 @@ bool clDataGeneratorThread::initialize()
             m_MainWindow->LogText(std::get<1>(loStatus), "red");
         }
     }
+}
 
-
+void clDataGeneratorThread::initializeDataTransfer()
+{
     if (m_Initialized && m_DataSource->m_AutoSendData)
     {
 
@@ -140,8 +151,6 @@ bool clDataGeneratorThread::initialize()
         else
             sendData();
     }
-
-    return  m_Initialized;
 }
 
 void clDataGeneratorThread::sendData()

@@ -30,7 +30,7 @@ struct stDataSource
 		m_AutoSendData = false;
 		m_Savelog = false;
 		m_ServerMode = false;
-		std::fill(std::begin(m_IpAdress), std::end(m_IpAdress), '\0');
+		std::fill(std::begin(m_IpAddress), std::end(m_IpAddress), '\0');
 		std::fill(std::begin(m_PortNummber), std::end(m_PortNummber), '\0');
 		std::fill(std::begin(m_AutoSendIntervalType), std::end(m_AutoSendIntervalType), '\0');
 		std::fill(std::begin(m_DataSourceType), std::end(m_DataSourceType), '\0');
@@ -42,7 +42,7 @@ struct stDataSource
 	bool m_AutoSendData;
 	bool m_Savelog;
 	bool m_ServerMode;
-	char m_IpAdress[50];
+	char m_IpAddress[50];
 	char m_PortNummber[50];
 	char m_AutoSendIntervalType[50];
 	char m_DataSourceType[50];

@@ -47,6 +47,8 @@ private slots:
 private:
 
     bool initialize();
+    void initializeDataTransfer();
+    void initializeConnection();
     void logData(const QString& paMessage, bool paError);
     int  generateRandomInteger(const int paLowerLimit, const int paUpperLimit);
     void sendData();

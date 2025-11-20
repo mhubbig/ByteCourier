@@ -60,21 +60,34 @@ private slots:
 
 private:
 
+    void buildSignalSlotConnection();
     void fillDataSourceText();
 
     Q_INVOKABLE void invokeAbleLogText(QString const& paMessage, QString const& paForegroundColor = "black");
+    void writeToFile(QString& loMessage);
     Q_INVOKABLE void invokabeDisconnedted();
 
+    bool prepareConnection();
     QFrame*  makeFrame(QWidget* paParent);
     QWidget* buildOperationWidget(QWidget *paParent);
+    void serverOperationWidget(QFrame* loTcpIpServerFrame);
+    void clientOperationWidget(QFrame* loTcpIpClientFrame);
     QWidget* buildLogWidget(QWidget *paParent);
     QWidget* buildDataSourceWidget(QWidget* paParent);
+
+    void saveDataWidget(QFrame* loSaveLogFrame);
+
+    void loadDataWidget();
+
+    void dataTransferInterval(QFrame* loIntervalFrame);
+
+    void dataSourceSelection(QFrame* loDataSourceFrame);
 
     clDataGeneratorThread* m_ClientEventLoop;
 
     //************* ConfigTab
     /* Tcp/Ip Client */
-    QRadioButton* m_TcpIpRadioCleint;
+    QRadioButton* m_TcpIpRadioClient     ;
     QTextEdit* m_IpAdressTcpClient;
     QTextEdit* m_PortNumberClient;
 

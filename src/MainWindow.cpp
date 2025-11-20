@@ -56,15 +56,18 @@ clMainWindow::clMainWindow(QWidget *parent) : QMainWindow(parent)
     m_CentralWidget->setLayout(gridLayout);
     setCentralWidget(m_CentralWidget);
 
+    buildSignalSlotConnection();
+}
+
+void clMainWindow::buildSignalSlotConnection()
+{
     connect(m_ConnectButton, SIGNAL(clicked()), this, SLOT(connectToServer()));
-    connect(m_TcpIpRadioCleint, SIGNAL(pressed()), this, SLOT(radioButtonsTcpClient()));
+    connect(m_TcpIpRadioClient     , SIGNAL(pressed()), this, SLOT(radioButtonsTcpClient()));
     connect(m_TcpIpRadioServer, SIGNAL(pressed()), this, SLOT(radioButtonsTcpServer()));
     connect(m_DataSourceComboBox, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(dataSourceComboBoxChanged(const QString&)));
     connect(m_IntervalCheckComboBox, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(intervalCheckComboBoxChanged(const QString&)));
     connect(m_IntervalCheckBox, SIGNAL(clicked(bool)), this, SLOT(intervalCheckBox(bool)));
     connect(m_OpenFileButton, SIGNAL(clicked()), this, SLOT(openTextFile()));
-
-    
 }
 
 void clMainWindow::setClientEventLoop( clDataGeneratorThread* const paClientEventLoop)
@@ -91,37 +94,30 @@ QWidget* clMainWindow::buildOperationWidget(QWidget *paParent)
     loTcpIpClientFrame->setFrameStyle(QFrame::Box | QFrame::Raised);
     loTcpIpClientFrame->setMaximumHeight(60);
 
-    m_TcpIpRadioCleint = new QRadioButton("TCP/IP Client");
-    m_TcpIpRadioCleint->setMaximumSize(QSize(140, 30));
-    m_TcpIpRadioCleint->setObjectName("TCP/IPClient");
-
-    m_IpAdressTcpClient = new QTextEdit(loTcpIpClientFrame);
-    m_IpAdressTcpClient->setMaximumSize(QSize(140, 28));
-    m_IpAdressTcpClient->setFontPointSize(qreal(9));
-    m_IpAdressTcpClient->setText("127.0.0.1");
-
-    m_PortNumberClient = new QTextEdit(loTcpIpClientFrame);
-    m_PortNumberClient->setMaximumSize(QSize(70, 28));
-    m_PortNumberClient->setFontPointSize(qreal(9));
-    m_PortNumberClient->setText("5000");
-
-    QHBoxLayout* loTcpClientOperationLayout = new QHBoxLayout(loTcpIpClientFrame);
-
-    loTcpClientOperationLayout->addWidget(m_TcpIpRadioCleint);
-    loTcpClientOperationLayout->addWidget(m_IpAdressTcpClient);
-    loTcpClientOperationLayout->addWidget(m_PortNumberClient);
-    loTcpClientOperationLayout->addStretch();
-    loTcpIpClientFrame->setLayout(loTcpClientOperationLayout);
+    clientOperationWidget(loTcpIpClientFrame);
 
 
     QFrame* loTcpIpServerFrame = new QFrame(paParent);
     loTcpIpServerFrame->setFrameStyle(QFrame::Box | QFrame::Raised);
     loTcpIpServerFrame->setMaximumHeight(60);
 
+    serverOperationWidget(loTcpIpServerFrame);
+
+    loMainSettingGuiLayout->addWidget(loTcpIpClientFrame, ++row, column);
+    loMainSettingGuiLayout->addWidget(loTcpIpServerFrame, ++row, column);
+
+    loMainSettingGuiLayout->addItem(new QSpacerItem(20, 400, QSizePolicy::Expanding, QSizePolicy::Expanding), ++row, column);
+    loMainSettingGuiLayout->addItem(new QSpacerItem(300, 100, QSizePolicy::Expanding, QSizePolicy::Expanding), row, ++column);
+
+    return loMainSettingWidget;
+}
+
+void clMainWindow::serverOperationWidget(QFrame* loTcpIpServerFrame)
+{
     m_TcpIpRadioServer = new QRadioButton("TCP/IP Server");
     m_TcpIpRadioServer->setMaximumSize(QSize(140, 30));
-    m_TcpIpRadioCleint->setChecked(true);
-    m_TcpIpRadioCleint->setObjectName("TCP/IPServer");
+    m_TcpIpRadioClient->setChecked(true);
+    m_TcpIpRadioClient->setObjectName("TCP/IPServer");
 
     m_IpAdressTcpServer = new QTextEdit(loTcpIpServerFrame);
     m_IpAdressTcpServer->setMaximumSize(QSize(140, 28));
@@ -140,15 +136,31 @@ QWidget* clMainWindow::buildOperationWidget(QWidget *paParent)
     loTcpServerOperationLayout->addWidget(m_PortNumberServer);
     loTcpServerOperationLayout->addStretch();
     loTcpIpServerFrame->setLayout(loTcpServerOperationLayout);
+}
 
+void clMainWindow::clientOperationWidget(QFrame* loTcpIpClientFrame)
+{
+    m_TcpIpRadioClient = new QRadioButton("TCP/IP Client");
+    m_TcpIpRadioClient->setMaximumSize(QSize(140, 30));
+    m_TcpIpRadioClient->setObjectName("TCP/IPClient");
 
-    loMainSettingGuiLayout->addWidget(loTcpIpClientFrame, ++row, column);
-    loMainSettingGuiLayout->addWidget(loTcpIpServerFrame, ++row, column);
+    m_IpAdressTcpClient = new QTextEdit(loTcpIpClientFrame);
+    m_IpAdressTcpClient->setMaximumSize(QSize(140, 28));
+    m_IpAdressTcpClient->setFontPointSize(qreal(9));
+    m_IpAdressTcpClient->setText("127.0.0.1");
 
-    loMainSettingGuiLayout->addItem(new QSpacerItem(20, 400, QSizePolicy::Expanding, QSizePolicy::Expanding), ++row, column);
-    loMainSettingGuiLayout->addItem(new QSpacerItem(300, 100, QSizePolicy::Expanding, QSizePolicy::Expanding), row, ++column);
+    m_PortNumberClient = new QTextEdit(loTcpIpClientFrame);
+    m_PortNumberClient->setMaximumSize(QSize(70, 28));
+    m_PortNumberClient->setFontPointSize(qreal(9));
+    m_PortNumberClient->setText("5000");
 
-    return loMainSettingWidget;
+    QHBoxLayout* loTcpClientOperationLayout = new QHBoxLayout(loTcpIpClientFrame);
+
+    loTcpClientOperationLayout->addWidget(m_TcpIpRadioClient);
+    loTcpClientOperationLayout->addWidget(m_IpAdressTcpClient);
+    loTcpClientOperationLayout->addWidget(m_PortNumberClient);
+    loTcpClientOperationLayout->addStretch();
+    loTcpIpClientFrame->setLayout(loTcpClientOperationLayout);
 }
 
 
@@ -165,26 +177,50 @@ QWidget* clMainWindow::buildDataSourceWidget(QWidget* paParent)
     loDataSourceFrame->setFrameStyle(QFrame::Box | QFrame::Raised);
     loDataSourceFrame->setMaximumHeight(60);
 
-    m_DataSourceLabel = new QLabel("Data Source", loDataSourceFrame);
-    m_DataSourceLabel->setMaximumWidth(140);
-
-    m_DataSourceComboBox = new QComboBox(loDataSourceFrame);
-    m_DataSourceComboBox->addItem("Random text");
-    m_DataSourceComboBox->addItem("Text file");
-    m_DataSourceComboBox->addItem("Text string");
-
-
-    QHBoxLayout* loDataSourceLayout = new QHBoxLayout(loDataSourceFrame);
-
-    loDataSourceLayout->addWidget(m_DataSourceLabel);
-    loDataSourceLayout->addWidget(m_DataSourceComboBox);
-    loDataSourceFrame->setLayout(loDataSourceLayout);
+    dataSourceSelection(loDataSourceFrame);
 
     /************************* loading file and typing string part */
     m_TextFrame = new QFrame(paParent);
     //m_TextFrame->setMaximumHeight(60);
     m_TextFrame->hide();
 
+    loadDataWidget();
+
+    /************************* Sending message interval part */
+    QFrame* loIntervalFrame = new QFrame(paParent);
+
+    dataTransferInterval(loIntervalFrame);
+
+    /************************* Sending message interval part */
+    QFrame* loSaveLogFrame = new QFrame(paParent);
+
+    saveDataWidget(loSaveLogFrame);
+    
+    //************************ Adding the widget to rhe main layout
+    loMainDataSourceGuiLayout->addWidget(loDataSourceFrame, ++row, column);
+    loMainDataSourceGuiLayout->addWidget(m_TextFrame, ++row, column);
+    loMainDataSourceGuiLayout->addWidget(loIntervalFrame, ++row, column);
+    loMainDataSourceGuiLayout->addWidget(loSaveLogFrame, ++row, column);
+
+    loMainDataSourceGuiLayout->addItem(new QSpacerItem(20, 400, QSizePolicy::Expanding, QSizePolicy::Expanding), ++row, column);
+
+    return loMainDataSourceWidget;
+}
+
+void clMainWindow::saveDataWidget(QFrame* loSaveLogFrame)
+{
+    m_SaveTheLog = new QCheckBox("Save log file", loSaveLogFrame);
+
+    QHBoxLayout* loSaveTheLogLayout = new QHBoxLayout(loSaveLogFrame);
+
+    loSaveTheLogLayout->addWidget(m_SaveTheLog);
+    loSaveTheLogLayout->addItem(new QSpacerItem(20, 10, QSizePolicy::Expanding, QSizePolicy::MinimumExpanding));
+
+    loSaveLogFrame->setLayout(loSaveTheLogLayout);
+}
+
+void clMainWindow::loadDataWidget()
+{
     m_DataText = new QTextEdit(m_TextFrame);
 
     m_OpenFileButton = new QPushButton(m_TextFrame);
@@ -197,13 +233,12 @@ QWidget* clMainWindow::buildDataSourceWidget(QWidget* paParent)
     loTextLayout->addWidget(m_DataText);
     loTextLayout->addWidget(m_OpenFileButton);
     m_TextFrame->setLayout(loTextLayout);
+}
 
-
-    /************************* Sending message interval part */
-    QFrame* loIntervalFrame = new QFrame(paParent);
-
+void clMainWindow::dataTransferInterval(QFrame* loIntervalFrame)
+{
     m_IntervalCheckBox = new QCheckBox("Auto Sending Interval (ms)", loIntervalFrame);
-    
+
     m_IntervalCheckComboBox = new QComboBox(loIntervalFrame);
     m_IntervalCheckComboBox->addItem("Fix");
     m_IntervalCheckComboBox->addItem("Random");
@@ -230,29 +265,24 @@ QWidget* clMainWindow::buildDataSourceWidget(QWidget* paParent)
     loIntervalLayout->addItem(new QSpacerItem(20, 10, QSizePolicy::Expanding, QSizePolicy::MinimumExpanding));
 
     loIntervalFrame->setLayout(loIntervalLayout);
+}
+
+void clMainWindow::dataSourceSelection(QFrame* loDataSourceFrame)
+{
+    m_DataSourceLabel = new QLabel("Data Source", loDataSourceFrame);
+    m_DataSourceLabel->setMaximumWidth(140);
+
+    m_DataSourceComboBox = new QComboBox(loDataSourceFrame);
+    m_DataSourceComboBox->addItem("Random text");
+    m_DataSourceComboBox->addItem("Text file");
+    m_DataSourceComboBox->addItem("Text string");
 
 
-    /************************* Sending message interval part */
-    QFrame* loSaveLogFrame = new QFrame(paParent);
+    QHBoxLayout* loDataSourceLayout = new QHBoxLayout(loDataSourceFrame);
 
-    m_SaveTheLog = new QCheckBox("Save log file", loSaveLogFrame);
-
-    QHBoxLayout* loSaveTheLogLayout = new QHBoxLayout(loSaveLogFrame);
-
-    loSaveTheLogLayout->addWidget(m_SaveTheLog);
-    loSaveTheLogLayout->addItem(new QSpacerItem(20, 10, QSizePolicy::Expanding, QSizePolicy::MinimumExpanding));
-
-    loSaveLogFrame->setLayout(loSaveTheLogLayout);
-    
-    //************************ Adding the widget to rhe main layout
-    loMainDataSourceGuiLayout->addWidget(loDataSourceFrame, ++row, column);
-    loMainDataSourceGuiLayout->addWidget(m_TextFrame, ++row, column);
-    loMainDataSourceGuiLayout->addWidget(loIntervalFrame, ++row, column);
-    loMainDataSourceGuiLayout->addWidget(loSaveLogFrame, ++row, column);
-
-    loMainDataSourceGuiLayout->addItem(new QSpacerItem(20, 400, QSizePolicy::Expanding, QSizePolicy::Expanding), ++row, column);
-
-    return loMainDataSourceWidget;
+    loDataSourceLayout->addWidget(m_DataSourceLabel);
+    loDataSourceLayout->addWidget(m_DataSourceComboBox);
+    loDataSourceFrame->setLayout(loDataSourceLayout);
 }
 
 QWidget* clMainWindow::buildLogWidget(QWidget *paParent)
@@ -296,23 +326,26 @@ void clMainWindow::invokeAbleLogText(QString const& paMessage, QString const& pa
         m_LogText->append(loMessage);
 
         if (m_FileIsOpen)
-        {
-            QByteArray szByte = loMessage.toLocal8Bit();
-            std::string szMessage(szByte.constData(), szByte.length());
-
-            for (const char loChar : szMessage)
-            {
-                char value[2];
-                value[0] = loChar;
-                value[1] = _T('\0');
-                fprintf(m_LogFile, "%s", &value);
-            }
-            fprintf(m_LogFile, "\n");
-        }
+            writeToFile(loMessage);
     }
 
     QScrollBar* loVerticalScrollBar = m_LogText->verticalScrollBar();
     loVerticalScrollBar->setValue(loVerticalScrollBar->maximum());
+}
+
+void clMainWindow::writeToFile(QString& loMessage)
+{
+    QByteArray szByte = loMessage.toLocal8Bit();
+    std::string szMessage(szByte.constData(), szByte.length());
+
+    for (const char loChar : szMessage)
+    {
+        char value[2];
+        value[0] = loChar;
+        value[1] = _T('\0');
+        fprintf(m_LogFile, "%s", &value);
+    }
+    fprintf(m_LogFile, "\n");
 }
 
 void clMainWindow:: connectToServer()
@@ -322,66 +355,10 @@ void clMainWindow:: connectToServer()
         QByteArray loPortNumber;
         QByteArray loIpAdress;
 
-        m_FileIsOpen = false;
+        if (!prepareConnection())
+            return;
 
-        if (m_SaveTheLog->isChecked())
-        {
-            QString loDateTime = QDateTime::currentDateTime().toString("yyyyMMdd_hh.mm");
-            std::string loFileName("LogFile_" + loDateTime.toStdString() + ".txt");
-            const char* fname = loFileName.c_str();
-
-            m_LogFile = fopen(fname, "a");
-            if (m_LogFile)
-                m_FileIsOpen = true;
-
-        }
-
-        if (m_IntervalCheckBox->isChecked() && m_IntervalCheckComboBox-> currentText() == "Random")
-        {
-            if (m_FixIntervalSpinBox->value() > m_RandomIntervalSpinBox->value())
-            {
-                QMessageBox msgBox;
-                msgBox.setText("The right value of interval must be bigger than the left value!");
-                msgBox.setStandardButtons(QMessageBox::Ok);
-                msgBox.setDefaultButton(QMessageBox::Ok);
-                msgBox.exec();
-
-                return;
-            }
-        }
-
-        if (m_DataSourceComboBox->currentText() == "Random text") {
-            m_CurrentDataSource.m_DataSize = 20;
-        }
-        else {
-
-            if (m_DataText->toPlainText().isEmpty())
-            {
-                QMessageBox msgBox;
-                msgBox.setText("Fill the message text or load the file!");
-                msgBox.setStandardButtons(QMessageBox::Ok);
-                msgBox.setDefaultButton(QMessageBox::Ok);
-                msgBox.exec();
-                return;
-            }
-
-            fillDataSourceText();
-        }
-
-        m_CurrentDataSource.m_AutoSendData = m_IntervalCheckBox->isChecked();
-        m_CurrentDataSource.m_Savelog = m_SaveTheLog->isChecked();
-        
-        const QByteArray& loDataSourceType = m_DataSourceComboBox->currentText().toLatin1();
-        strncpy_s(m_CurrentDataSource.m_DataSourceType, sizeof(m_CurrentDataSource.m_DataSourceType), loDataSourceType.constData(), loDataSourceType.length());
-        m_CurrentDataSource.m_DataSourceType[sizeof(m_CurrentDataSource.m_DataSourceType) - 1] = _T('\0');
-
-        QByteArray loIntervalType = m_IntervalCheckComboBox->currentText().toLatin1();
-        strncpy_s(m_CurrentDataSource.m_AutoSendIntervalType, sizeof(m_CurrentDataSource.m_AutoSendIntervalType), loIntervalType.constData(), loIntervalType.length());
-        m_CurrentDataSource.m_AutoSendIntervalType[sizeof(m_CurrentDataSource.m_AutoSendIntervalType) - 1] = _T('\0');
-
-        m_CurrentDataSource.m_AutoSendIntervalPair = { m_FixIntervalSpinBox->value() ,  m_RandomIntervalSpinBox->value()};
-
-        if (m_TcpIpRadioCleint->isChecked())
+        if (m_TcpIpRadioClient->isChecked())
         {
 
             m_CurrentDataSource.m_ServerMode = false;
@@ -389,8 +366,8 @@ void clMainWindow:: connectToServer()
             loPortNumber = m_PortNumberClient->toPlainText().toLatin1();
             loIpAdress = m_IpAdressTcpClient->toPlainText().toLatin1();
 
-            strncpy_s(m_CurrentDataSource.m_IpAdress, sizeof(m_CurrentDataSource.m_IpAdress), loIpAdress.constData(), loIpAdress.length());
-            m_CurrentDataSource.m_IpAdress[sizeof(m_CurrentDataSource.m_IpAdress) - 1] = _T('\0');
+            strncpy_s(m_CurrentDataSource.m_IpAddress, sizeof(m_CurrentDataSource.m_IpAddress), loIpAdress.constData(), loIpAdress.length());
+            m_CurrentDataSource.m_IpAddress[sizeof(m_CurrentDataSource.m_IpAddress) - 1] = _T('\0');
 
             strncpy_s(m_CurrentDataSource.m_PortNummber, sizeof(m_CurrentDataSource.m_PortNummber), loPortNumber.constData(), loPortNumber.length());
             m_CurrentDataSource.m_PortNummber[sizeof(m_CurrentDataSource.m_PortNummber) - 1] = _T('\0');
@@ -408,8 +385,8 @@ void clMainWindow:: connectToServer()
             loPortNumber = m_PortNumberServer->toPlainText().toLatin1();
             loIpAdress = m_IpAdressTcpServer->toPlainText().toLatin1();
 
-            strncpy_s(m_CurrentDataSource.m_IpAdress, sizeof(m_CurrentDataSource.m_IpAdress), loIpAdress.constData(), loIpAdress.length());
-            m_CurrentDataSource.m_IpAdress[sizeof(m_CurrentDataSource.m_IpAdress) - 1] = _T('\0');
+            strncpy_s(m_CurrentDataSource.m_IpAddress, sizeof(m_CurrentDataSource.m_IpAddress), loIpAdress.constData(), loIpAdress.length());
+            m_CurrentDataSource.m_IpAddress[sizeof(m_CurrentDataSource.m_IpAddress) - 1] = _T('\0');
 
             strncpy_s(m_CurrentDataSource.m_PortNummber, sizeof(m_CurrentDataSource.m_PortNummber), loPortNumber.constData(), loPortNumber.length());
             m_CurrentDataSource.m_PortNummber[sizeof(m_CurrentDataSource.m_PortNummber) - 1] = _T('\0');
@@ -429,7 +406,7 @@ void clMainWindow:: connectToServer()
             {
                 m_ConnectedToServer = false;
 
-                if (m_TcpIpRadioCleint->isChecked())
+                if (m_TcpIpRadioClient     ->isChecked())
                     m_ConnectButton->setText("Connect to Server");
                 else if (m_TcpIpRadioServer->isChecked())
                     m_ConnectButton->setText("Start Server");
@@ -448,6 +425,69 @@ void clMainWindow:: connectToServer()
     }
 }
 
+bool clMainWindow::prepareConnection()
+{
+    m_FileIsOpen = false;
+
+    if (m_SaveTheLog->isChecked())
+    {
+        QString loDateTime = QDateTime::currentDateTime().toString("yyyyMMdd_hh.mm");
+        std::string loFileName("LogFile_" + loDateTime.toStdString() + ".txt");
+        const char* fname = loFileName.c_str();
+
+        m_LogFile = fopen(fname, "a");
+        if (m_LogFile)
+            m_FileIsOpen = true;
+
+    }
+
+    if (m_IntervalCheckBox->isChecked() && m_IntervalCheckComboBox->currentText() == "Random")
+    {
+        if (m_FixIntervalSpinBox->value() > m_RandomIntervalSpinBox->value())
+        {
+            QMessageBox msgBox;
+            msgBox.setText("The right value of interval must be bigger than the left value!");
+            msgBox.setStandardButtons(QMessageBox::Ok);
+            msgBox.setDefaultButton(QMessageBox::Ok);
+            msgBox.exec();
+
+            return false;
+        }
+    }
+
+    if (m_DataSourceComboBox->currentText() == "Random text") {
+        m_CurrentDataSource.m_DataSize = 20;
+    }
+    else {
+
+        if (m_DataText->toPlainText().isEmpty())
+        {
+            QMessageBox msgBox;
+            msgBox.setText("Fill the message text or load the file!");
+            msgBox.setStandardButtons(QMessageBox::Ok);
+            msgBox.setDefaultButton(QMessageBox::Ok);
+            msgBox.exec();
+            return false;
+        }
+
+        fillDataSourceText();
+    }
+
+    m_CurrentDataSource.m_AutoSendData = m_IntervalCheckBox->isChecked();
+    m_CurrentDataSource.m_Savelog = m_SaveTheLog->isChecked();
+
+    const QByteArray& loDataSourceType = m_DataSourceComboBox->currentText().toLatin1();
+    strncpy_s(m_CurrentDataSource.m_DataSourceType, sizeof(m_CurrentDataSource.m_DataSourceType), loDataSourceType.constData(), loDataSourceType.length());
+    m_CurrentDataSource.m_DataSourceType[sizeof(m_CurrentDataSource.m_DataSourceType) - 1] = _T('\0');
+
+    QByteArray loIntervalType = m_IntervalCheckComboBox->currentText().toLatin1();
+    strncpy_s(m_CurrentDataSource.m_AutoSendIntervalType, sizeof(m_CurrentDataSource.m_AutoSendIntervalType), loIntervalType.constData(), loIntervalType.length());
+    m_CurrentDataSource.m_AutoSendIntervalType[sizeof(m_CurrentDataSource.m_AutoSendIntervalType) - 1] = _T('\0');
+
+    m_CurrentDataSource.m_AutoSendIntervalPair = { m_FixIntervalSpinBox->value() ,  m_RandomIntervalSpinBox->value() };
+
+    return true;
+}
 
 void clMainWindow::radioButtonsTcpClient()
 {
@@ -591,11 +631,11 @@ void clMainWindow::disconnedted()
 }
 void clMainWindow::invokabeDisconnedted()
 {
-    if (m_ConnectedToServer && m_TcpIpRadioCleint->isChecked())
+    if (m_ConnectedToServer && m_TcpIpRadioClient     ->isChecked())
     {
         m_ConnectedToServer = false;
 
-        if (m_TcpIpRadioCleint->isChecked())
+        if (m_TcpIpRadioClient     ->isChecked())
             m_ConnectButton->setText("Connect to Server");
         else if (m_TcpIpRadioServer->isChecked())
             m_ConnectButton->setText("Start Server");
