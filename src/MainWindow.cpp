@@ -39,25 +39,22 @@ clMainWindow::clMainWindow(QWidget *parent) : QMainWindow(parent)
     m_CentralWidget = new QWidget(this);
     m_CentralWidget->setObjectName(QString::fromUtf8("centralwidget"));
     gridLayout = new QGridLayout(m_CentralWidget);
-    gridLayout->setObjectName(QString::fromUtf8("gridLayout_3"));
-    m_CentralWidget = new QTabWidget(m_CentralWidget);
+    gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
 
-    this->setCentralWidget(m_CentralWidget);
-
-    QGridLayout* meMainGuiLayout = new QGridLayout(m_CentralWidget);
-
-    m_MainTabWidget = new QTabWidget;
-    meMainGuiLayout->addWidget(m_MainTabWidget);
-
-    m_ConnectButton = new QPushButton("Connect to Server");
-    m_ConnectButton->setMaximumSize(QSize(120, 30));
-    meMainGuiLayout->addWidget(m_ConnectButton);
+    m_MainTabWidget = new QTabWidget(m_CentralWidget);
 
     m_MainTabWidget->addTab(buildOperationWidget(m_CentralWidget), "Setting");
     m_MainTabWidget->addTab(buildDataSourceWidget(m_CentralWidget), "Data Source");
     m_MainTabWidget->addTab(buildLogWidget(m_CentralWidget), "Log");
+    
+    gridLayout->addWidget(m_MainTabWidget);
 
-    m_CentralWidget->setLayout(meMainGuiLayout);
+    m_ConnectButton = new QPushButton("Connect to Server");
+    m_ConnectButton->setMaximumSize(QSize(120, 30));
+    gridLayout->addWidget(m_ConnectButton);
+
+    m_CentralWidget->setLayout(gridLayout);
+    setCentralWidget(m_CentralWidget);
 
     connect(m_ConnectButton, SIGNAL(clicked()), this, SLOT(connectToServer()));
     connect(m_TcpIpRadioCleint, SIGNAL(pressed()), this, SLOT(radioButtonsTcpClient()));
@@ -453,7 +450,6 @@ void clMainWindow:: connectToServer()
 
 void clMainWindow::radioButtonsTcpClient()
 {
-    m_TcpIpRadioCleint->setChecked(true);
     m_ConnectButton->setText("Connect to Server");
 
     QList<QRadioButton*> allPRadioButtons = findChildren<QRadioButton*>();
@@ -464,7 +460,6 @@ void clMainWindow::radioButtonsTcpClient()
 
 void clMainWindow::radioButtonsTcpServer()
 {
-    m_TcpIpRadioServer->setChecked(true);
     m_ConnectButton->setText("Start Server");
 
     QList<QRadioButton*> allPRadioButtons = findChildren<QRadioButton*>();
@@ -547,7 +542,7 @@ void clMainWindow::fillDataSourceText()
 
         QByteArray loDataText = m_DataText->toPlainText().toLocal8Bit();
 
-        memset(m_CurrentDataSource.m_SourceDataText.get(), 0, m_CurrentDataSource.m_DataSize);
+        memset(m_CurrentDataSource.m_SourceDataText.get(), '\0', m_CurrentDataSource.m_DataSize);
         memcpy(m_CurrentDataSource.m_SourceDataText.get(), loDataText.constData(), m_CurrentDataSource.m_DataSize);
 
     }
@@ -572,7 +567,7 @@ void clMainWindow::fillDataSourceText()
         m_CurrentDataSource.m_DataSize = loFileContent.length();
         m_CurrentDataSource.m_SourceDataText = std::shared_ptr<char>(new char[m_CurrentDataSource.m_DataSize](), std::default_delete<char[]>());
 
-        memset(m_CurrentDataSource.m_SourceDataText.get(), 0, m_CurrentDataSource.m_DataSize);
+        memset(m_CurrentDataSource.m_SourceDataText.get(), '\0', m_CurrentDataSource.m_DataSize);
         memcpy(m_CurrentDataSource.m_SourceDataText.get(), loFileContent.c_str(), m_CurrentDataSource.m_DataSize);
 
         loFile.close();

@@ -31,9 +31,9 @@ struct stDataSource
 		m_Savelog = false;
 		m_ServerMode = false;
 		std::fill(std::begin(m_IpAdress), std::end(m_IpAdress), '\0');
-		std::fill(std::begin(m_PortNummber), std::end(m_PortNummber), '/0');
+		std::fill(std::begin(m_PortNummber), std::end(m_PortNummber), '\0');
 		std::fill(std::begin(m_AutoSendIntervalType), std::end(m_AutoSendIntervalType), '\0');
-		std::fill(std::begin(m_DataSourceType), std::end(m_DataSourceType), '/0');
+		std::fill(std::begin(m_DataSourceType), std::end(m_DataSourceType), '\0');
 		m_AutoSendIntervalPair = { 3000.0, 3000.0 };
 		m_DataSize = 0;
 		m_SourceDataText = nullptr;

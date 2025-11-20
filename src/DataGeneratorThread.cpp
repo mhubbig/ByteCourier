@@ -29,8 +29,8 @@ clDataGeneratorThread::clDataGeneratorThread(clMainWindow* const paMainWindow, Q
 }
 clDataGeneratorThread::~clDataGeneratorThread()
 {
-    wait();
     quit();
+    wait();
 }
 
 void clDataGeneratorThread::reset(){
